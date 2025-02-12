@@ -1,0 +1,19 @@
+# this is a codealpha taks 1 cretae basic network sniffer 
+
+from scapy.all import sniff, IP, TCP, UDP, ICMP
+
+def packet_callback(packet):
+    if IP in packet:
+        ip_src = packet[IP].src   # Source IP
+        ip_dst = packet[IP].dst   # Destination IP
+        protocol = packet[IP].proto  # Protocol (TCP/UDP/ICMP)
+        
+        print(f"Packet: {ip_src} -> {ip_dst} | Protocol: {protocol}")
+        if TCP in packet:
+            print(f"  [TCP] Source Port: {packet[TCP].sport}, Destination Port: {packet[TCP].dport}")
+        elif UDP in packet:
+            print(f"  [UDP] Source Port: {packet[UDP].sport}, Destination Port: {packet[UDP].dport}")
+        elif ICMP in packet:
+            print("  [ICMP] ICMP Packet")
+print("Starting network sniffer...")
+sniff(filter="ip", prn=packet_callback, iface="eth0", count=10)
